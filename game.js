@@ -39,7 +39,7 @@ const CONFIG = {
       name: 'Kenji', role: 'Digital Marketing Manager', tagline: 'De conversiekoning',
       frames: [0, 1, 2, 3, 4, 5, 6].map(i => `assets/character/kenji-${i}.webp`),
       card: 'assets/character/card-kenji.webp',
-      endImage: ''                                     // Kenji at home: not delivered yet
+      endImage: 'assets/scenes/end-saida.jpg'          // temporary: Saida's end art until HOUSE delivers Kenji at home
     }
   },
   defaultCharacter: 'saida',
@@ -48,7 +48,9 @@ const CONFIG = {
   // Progress share per phase follows the brief: 0–25%, 25–75%, 75–100%
   phases: [
     {
-      title: 'FASE 1. VAN BRIEFING NAAR IDEE EN STRATEGIE', short: 'FASE 1', range: [0, 25], color: '#c6a6f5',
+      title: 'FASE 1. VAN BRIEFING NAAR IDEE EN STRATEGIE', short: 'FASE 1',
+      range: [0, 25], color: '#c6a6f5',
+      hud: 'FASE 1. VAN BRIEFING NAAR IDEE',          // HUD plate text: the full title does not fit its slot
       done: 'Het idee staat. Tijd om te maken!',
       pace: { fall: .19, every: 1.2, maxOnScreen: 3, feedback: .10, cake: .05, maxFeedbackHits: 2 },
       cards: [
@@ -336,7 +338,16 @@ function resize() {
   // Centre text baseline: 30 design px under the arch centre (Web 1920 - 10)
   L.titleY = clamp(portrait ? H * .42 : L.cy + 30 * s, L.hudBottom + 50, L.baseY - L.charH * 1.3 - 20);
   const game = $('game');
-  game.style.setProperty('--s', Math.min(W / 1797, H / 1011));   // artboard scale: HUD, start and end screens
+  // Artboards keep the design size at the design width (1797 px frame = 1920 px page). They shrink
+  // by height only when the frame is too short for their content (start ~710 px, end ~944 px tall).
+  game.style.setProperty('--hs', Math.min(1, W / 1797));                  // HUD plate
+  game.style.setProperty('--s', Math.min(W / 1797, H / 710));             // start screen
+  // End screen: copy block (182-815 px) stays centred; bubbles stick to the top of the frame and the
+  // waveform to the bottom when the frame is shorter than the 1011 px design frame
+  const se = Math.min(W / 1797, H / 730), eoff = Math.max(0, (1011 - H / se) / 2);
+  game.style.setProperty('--se', se);
+  game.style.setProperty('--eoff', eoff + 'px');
+  game.style.setProperty('--woff', Math.min(0, 1011 - eoff - 24 - 898) + 'px');
   game.style.setProperty('--k', portrait ? Math.min(1, W / 520) : s);  // office art scale: intro block
   const intro = $('intro');
   intro.style.left = L.cx + 'px';
@@ -368,7 +379,7 @@ function fitHudTitle() {
 }
 function updateHud(pop) {
   const p = PHASES[phase], n = p.cards.filter(c => caught.has(c.id)).length, done = state === 'live' || state === 'end';
-  const name = done ? PHASES[PHASES.length - 1].title : portrait ? p.short : p.title;   // narrow HUD: just "FASE 1"
+  const name = done ? PHASES[PHASES.length - 1].title : portrait ? p.short : (p.hud || p.title);   // narrow HUD: just "FASE 1"
   if ($('phaseName').textContent !== name) { $('phaseName').textContent = name; fitHudTitle(); }
   $('hud').classList.toggle('full', done);
   $('pct').textContent = progress() + '%';

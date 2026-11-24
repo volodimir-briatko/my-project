@@ -42,8 +42,8 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 
 /* HUD: the 880 x 87 plate from the design, scaled with the frame (--s) and overlapping its top edge.
    Positions are design pixels, measured on Web 1920 - 7 / 10 and the HUD states (Group 416). */
-.hud{position:absolute;z-index:7;left:50%;top:max(0px,calc(var(--top) - 60px * var(--s,1)));width:880px;height:87px;
-  transform:translateX(calc(-50% - 20.5px * var(--s,1))) scale(var(--s,1));transform-origin:50% 0;
+.hud{position:absolute;z-index:7;left:50%;top:max(0px,calc(var(--top) - 60px * var(--hs,1)));width:880px;height:87px;
+  transform:translateX(calc(-50% - 20.5px * var(--hs,1))) scale(var(--hs,1));transform-origin:50% 0;
   background:var(--hud);border-radius:20px;pointer-events:none;font-family:var(--display);line-height:1;letter-spacing:-.03em;white-space:nowrap;transition:opacity .3s,background .5s}
 .hud.hidden{opacity:0}
 .hud.full{background:var(--hudLive)}
@@ -128,10 +128,13 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 
 /* ---------- End scene (Web 1920 - 9): art 1:1 with the frame, copy on the artboard ---------- */
 .end{background:#2a1a10;align-items:stretch;overflow:hidden;overflow:clip}   /* the slow zoom on the art must not create scrolling */
-.end .art{position:absolute;inset:0;background-size:cover;background-position:center;transform:scale(1.04);transition:transform 2.4s cubic-bezier(.2,.8,.2,1)}
+.end .art{position:absolute;inset:0;background-size:cover;background-position:center top;transform:scale(1.04);transition:transform 2.4s cubic-bezier(.2,.8,.2,1)}
 .end.in .art{transform:scale(1)}
 .end .art.placeholder{background:radial-gradient(ellipse at 74% 55%,#c98a4a 0%,#7a4a26 32%,#3a2414 62%,#1e140c 100%)}
 .end .phLabel{position:absolute;right:6%;bottom:8%;border:1.5px dashed #ffffff60;border-radius:12px;padding:10px 14px;font-size:12px;color:#ffffffb0;text-align:center;line-height:1.4}
+.endBoard{transform:translate(-50%,-50%) scale(var(--se,1))}
+.endBoard .bubbles{position:absolute;inset:0;translate:0 var(--eoff,0px);pointer-events:none}
+.endBoard .wave{translate:0 var(--woff,0px)}
 .tag{position:absolute;left:219px;top:182px;width:400px;height:26px;color:#fff;font-family:var(--display);font-size:18px;font-weight:500;line-height:1;letter-spacing:-.03em;white-space:nowrap}
 .tag .rk{position:absolute;left:0;top:0;width:26px;height:26px}
 .tag span.t{position:absolute;left:40px;top:7px}
@@ -200,6 +203,8 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
   .elead{width:auto;font-size:15px;line-height:1.35;margin-top:12px}
   .acts{display:flex;gap:22px;margin-top:16px}
   .link{font-size:15px}
+  .endBoard .bubbles,.endBoard .wave{translate:none}
+  .endBoard .bubbles{inset:auto}
   .bubbles{position:absolute;top:14px;left:14px;right:14px;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
   .bubble{font-size:13px;border-radius:16px}
   #msg{width:auto;max-width:330px;padding:10px 16px;line-height:1.3}
